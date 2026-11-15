@@ -1,22 +1,32 @@
-import type { Post } from '../types/post';
+import type { Category, Post } from '../types/post';
 import { PostCard } from './PostCard';
 
 type PostListProps = {
   posts: Post[];
+  categories?: Category[];
 };
 
 export function PostList(props: PostListProps) {
-    const { posts } = props;
+  const { posts, categories } = props;
 
-    if (posts.length === 0) {
-        return <p className="no-posts">Постов пока нет...</p>;
-}
+  const categoryMap = new Map<number, string>();
+  categories?.forEach((cat) => {
+    categoryMap.set(cat.id, cat.name);
+  });
 
-	return (
-        <div className="post-list">
-        {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-        ))}
-        </div>
+  if (posts.length === 0) {
+    return <p className="no-posts">Постов пока нет...</p>;
+  }
+
+  return (
+    <div className="post-list">
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          categoryName={post.categoryId ? categoryMap.get(post.categoryId) : undefined}
+        />
+      ))}
+    </div>
   );
 }
